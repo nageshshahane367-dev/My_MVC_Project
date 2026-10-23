@@ -1,33 +1,232 @@
 ﻿@using MyFirstMVCApp.Dto
 @model EmployeeDto
 
-<div>@ViewBag.Message</div>
-<form class="container d-flex justify-content-center align-items-center vh-100" asp-action="AddEmployeeDetail">
-    <div class="card p-4 shadow" style="width: 400px;">
-        <h3 class="text-center mb-4">Add Employee</h3>
+@{
+    ViewData["Title"] = "Add Employee";
+}
 
-        <div class="mb-3">
-            <label class="form-label">Name</label>
-            <input type="text" class="form-control" placeholder="Enter employee name" name="EmployeeName" asp-for="EmployeeName">
-        </div>
+<style>
+    .employee-page {
+        min-height: 85vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 35px 15px;
+        background: linear-gradient(135deg, #eef4ff, #e0eaff, #f5f7ff);
+        border-radius: 16px;
+    }
 
-        <div class="mb-3">
-            <label class="form-label">Department</label>
-            <input type="text" class="form-control" placeholder="Enter department" name="Department" asp-for="Department">
-        </div>
+    .employee-card {
+        width: 100%;
+        max-width: 480px;
+        padding: 35px;
+        background: #fff;
+        border: 1px solid #edf1f8;
+        border-radius: 20px;
+        box-shadow: 0 15px 45px rgba(30, 64, 175, 0.14);
+    }
 
-        <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-control" placeholder="Enter email" name="Email" asp-for="Email">
-        </div>
+    .employee-logo {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #2563eb, #4f46e5);
+        color: white;
+        font-size: 32px;
+        font-weight: 500;
+    }
 
-        <div class="mb-3">
-            <label class="form-label">Designation</label>
-            <input type="text" class="form-control" placeholder="Enter designation" name="Designation" asp-for="Designation">
-        </div>
+    .employee-title {
+        color: #172554;
+        text-align: center;
+        font-size: 27px;
+        font-weight: 750;
+        margin-bottom: 8px;
+    }
 
-        <div class="d-grid">
-            <button class="btn btn-success">Submit</button>
-        </div>
+    .employee-subtitle {
+        color: #64748b;
+        text-align: center;
+        font-size: 14px;
+        margin-bottom: 28px;
+    }
+
+    .employee-card .form-label {
+        color: #334155;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .employee-card .form-control {
+        min-height: 47px;
+        padding: 11px 14px;
+        border: 1px solid #dbe3ef;
+        border-radius: 10px;
+        font-size: 14px;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .employee-card .form-control:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+    }
+
+    .employee-submit {
+        width: 100%;
+        min-height: 48px;
+        margin-top: 8px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #2563eb, #4f46e5);
+        color: white;
+        font-weight: 600;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .employee-submit:hover {
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+    }
+
+    .employee-back {
+        display: block;
+        margin-top: 20px;
+        text-align: center;
+        color: #2563eb;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .employee-back:hover {
+        text-decoration: underline;
+    }
+
+    .employee-message {
+        margin-bottom: 18px;
+        text-align: center;
+        color: #dc2626;
+        font-size: 14px;
+    }
+
+    .employee-validation {
+        color: #dc2626;
+        font-size: 12px;
+    }
+
+    @@media (max-width: 480px) {
+        .employee-card {
+            padding: 26px 20px;
+        }
+    }
+</style>
+
+<div class="employee-page">
+    <div class="employee-card">
+
+        <div class="employee-logo">+</div>
+
+        <h2 class="employee-title">Add Employee</h2>
+
+        <p class="employee-subtitle">
+            Enter the employee details below
+        </p>
+
+        @if (ViewBag.Message != null)
+        {
+            <div class="employee-message" role="alert">
+                @ViewBag.Message
+            </div>
+        }
+
+        <form asp-controller="Dashboard"
+              asp-action="AddEmployeeDetail"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"
+                 class="employee-validation mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="EmployeeName" class="form-label">
+                    Employee Name
+                </label>
+
+                <input asp-for="EmployeeName"
+                       class="form-control"
+                       placeholder="Enter employee name"
+                       autocomplete="name"
+                       required />
+
+                <span asp-validation-for="EmployeeName"
+                      class="employee-validation"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Department" class="form-label">
+                    Department
+                </label>
+
+                <input asp-for="Department"
+                       class="form-control"
+                       placeholder="e.g. IT, HR, Finance"
+                       required />
+
+                <span asp-validation-for="Department"
+                      class="employee-validation"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">
+                    Email Address
+                </label>
+
+                <input asp-for="Email"
+                       type="email"
+                       class="form-control"
+                       placeholder="Enter employee email"
+                       autocomplete="email"
+                       required />
+
+                <span asp-validation-for="Email"
+                      class="employee-validation"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Designation" class="form-label">
+                    Designation
+                </label>
+
+                <input asp-for="Designation"
+                       class="form-control"
+                       placeholder="e.g. Software Developer"
+                       required />
+
+                <span asp-validation-for="Designation"
+                      class="employee-validation"></span>
+            </div>
+
+            <button type="submit" class="btn employee-submit">
+                Add Employee
+            </button>
+        </form>
+
+        <a asp-controller="Dashboard"
+           asp-action="Index"
+           class="employee-back">
+            ← Back to Dashboard
+        </a>
+
     </div>
-</form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

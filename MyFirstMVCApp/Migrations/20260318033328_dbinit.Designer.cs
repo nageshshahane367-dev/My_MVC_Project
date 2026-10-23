@@ -12,7 +12,7 @@ namespace MyFirstMVCApp.Migrations
 {
     [DbContext(typeof(AppDbContext))]
     [Migration("20260318033328_dbinit")]
-    partial class dbinit
+    partial class DbInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

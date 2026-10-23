@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using System.Text;
 using MyFirstMVCApp.Dto;
@@ -24,6 +25,7 @@ namespace MyFirstMVCApp.Controllers
 
         // Display Login page
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Login()
         {
             return View();
@@ -123,7 +125,7 @@ namespace MyFirstMVCApp.Controllers
             }
 
             // Generate JWT token
-            var token = GenerateJwtToken(user.Email);
+            var token = GenerateJwtToken(user.Username,user.Email);
 
             // Store token in an HTTP-only cookie
             var cookieOptions = new CookieOptions
@@ -143,45 +145,51 @@ namespace MyFirstMVCApp.Controllers
         }
 
         // Generate JWT token
-        private string GenerateJwtToken(string email)
+        private string GenerateJwtToken(string username, string email)
         {
-            var jwtKey = _configuration["Jwt:Key"];
+            var tokenHandler = new JwtSecurityTokenHandler();
 
-            if (string.IsNullOrWhiteSpace(jwtKey))
-            {
-                throw new InvalidOperationException(
-                    "JWT key is missing from configuration.");
-            }
+            var jwtKey = _configuration["Jwt:Key"]
+                ?? throw new InvalidOperationException("JWT key is missing.");
 
             var key = Encoding.UTF8.GetBytes(jwtKey);
 
-            var securityKey = new SymmetricSecurityKey(key);
-
-            var credentials = new SigningCredentials(
-                securityKey,
-                SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                new Claim(ClaimTypes.Name, email)
+                Subject = new ClaimsIdentity(new[]
+                {
+            new Claim(ClaimTypes.Name, username),
+            new Claim(ClaimTypes.Email, email)
+        }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                SigningCredentials = new SigningCredentials(
+                    new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
             };
 
-            var jwtToken = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler()
-                .WriteToken(jwtToken);
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
-
+        
         // Logout
-        [HttpGet]
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Logout()
         {
-            Response.Cookies.Delete("jwt_Token");
+            // Delete the JWT cookie using the same path.
+            Response.Cookies.Delete("jwt_Token", new CookieOptions
+            {
+                Path = "/",
+                Secure = Request.IsHttps,
+                HttpOnly = true,
+                SameSite = SameSiteMode.Strict
+            });
 
-            return RedirectToAction("Login");
+            // Redirect directly to the Login URL.
+            return Redirect("/Auth/Login");
         }
+
     }
 }

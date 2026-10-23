@@ -5,7 +5,7 @@
 namespace MyFirstMVCApp.Migrations
 {
     /// <inheritdoc />
-    public partial class dbinit : Migration
+    public partial class DbInit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

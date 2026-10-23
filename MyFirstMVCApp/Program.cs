@@ -1,4 +1,6 @@
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MyFirstMVCApp.Models;
@@ -6,62 +8,81 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-// Add services to the container.
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme= JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme= JwtBearerDefaults.AuthenticationScheme;
+// Database connection
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(
+        builder.Configuration.GetConnectionString("DefaultConnection")));
 
-}).AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = false;
-    options.SaveToken = true;
-
-    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-    {
-         ValidateIssuer = false,
-         ValidateAudience = false,
-         ValidateLifetime = true,
-         ValidateIssuerSigningKey = true,
-         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
-    };
-
-    options.Events = new JwtBearerEvents
-    {
-        OnMessageReceived = context =>
-        {
-            var token = context.Request.Cookies["jwt_Token"];
-
-            if (!string.IsNullOrEmpty(token))
-            {
-                context.Token = token;
-            }
-
-            return Task.CompletedTask;
-        },
-
-        OnChallenge = context =>
-        {
-            context.HandleResponse();
-            context.Response.Redirect("/");
-            return Task.CompletedTask;
-        }
-    };
-});
+// MVC services
 builder.Services.AddControllersWithViews();
+
+// JWT authentication
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme =
+            JwtBearerDefaults.AuthenticationScheme;
+
+        options.DefaultChallengeScheme =
+            JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+
+        var jwtKey = builder.Configuration["Jwt:Key"]
+            ?? throw new InvalidOperationException(
+                "JWT key is missing from configuration.");
+
+        var key = Encoding.UTF8.GetBytes(jwtKey);
+
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key)
+        };
+
+        options.Events = new JwtBearerEvents
+        {
+            // Read the JWT from the browser cookie
+            OnMessageReceived = context =>
+            {
+                var token = context.Request.Cookies["jwt_Token"];
+
+                if (!string.IsNullOrEmpty(token))
+                {
+                    context.Token = token;
+                }
+
+                return Task.CompletedTask;
+            },
+
+            // Redirect unauthenticated requests to the Home page
+            OnChallenge = context =>
+            {
+                context.HandleResponse();
+                context.Response.Redirect("/");
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+Console.WriteLine("TEST: Updated Program.cs is running");
+
+// Configure the HTTP request pipeline
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseRouting();
 
 app.UseAuthentication();
@@ -69,10 +90,23 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 
+// Default route: Home page
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Auth}/{action=Login}/{id?}")
+    pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+// Print registered MVC actions
+var actionProvider =
+    app.Services.GetRequiredService<IActionDescriptorCollectionProvider>();
+
+Console.WriteLine("\n========== MVC ACTIONS ==========");
+
+foreach (var action in actionProvider.ActionDescriptors.Items)
+{
+    Console.WriteLine(action.DisplayName);
+}
+
+Console.WriteLine("=================================\n");
 
 app.Run();
