@@ -1,0 +1,230 @@
+
+@{
+    ViewData["Title"] = "Privacy Policy";
+}
+
+<style>
+    .privacy-page {
+        min-height: 80vh;
+        padding: 45px 20px;
+        background: linear-gradient(135deg, #eef4ff, #e0eaff, #f5f7ff);
+        border-radius: 20px;
+    }
+
+    .privacy-container {
+        max-width: 850px;
+        margin: 0 auto;
+    }
+
+    .privacy-card {
+        padding: 40px;
+        background: #ffffff;
+        border: 1px solid #e5edfb;
+        border-radius: 20px;
+        box-shadow: 0 15px 45px rgba(30, 64, 175, 0.10);
+    }
+
+    .privacy-icon {
+        width: 65px;
+        height: 65px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 22px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #2563eb, #4f46e5);
+        color: white;
+        font-size: 30px;
+    }
+
+    .privacy-title {
+        color: #172554;
+        font-size: clamp(30px, 5vw, 42px);
+        font-weight: 800;
+        margin-bottom: 12px;
+    }
+
+    .privacy-subtitle {
+        color: #64748b;
+        font-size: 16px;
+        line-height: 1.8;
+        margin-bottom: 30px;
+    }
+
+    .privacy-section {
+        padding: 22px 0;
+        border-top: 1px solid #edf1f7;
+    }
+
+    .privacy-section h2 {
+        color: #1e3a8a;
+        font-size: 19px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .privacy-section p {
+        color: #64748b;
+        font-size: 14px;
+        line-height: 1.9;
+        margin-bottom: 0;
+    }
+
+    .privacy-note {
+        padding: 18px;
+        margin-top: 22px;
+        background: #eff6ff;
+        border-left: 4px solid #3b82f6;
+        border-radius: 10px;
+        color: #334155;
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    .privacy-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 30px;
+    }
+
+    .privacy-btn {
+        display: inline-block;
+        padding: 12px 22px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s ease;
+    }
+
+    .privacy-btn-primary {
+        background: linear-gradient(135deg, #2563eb, #4f46e5);
+        color: white;
+    }
+
+    .privacy-btn-primary:hover {
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+    }
+
+    .privacy-btn-secondary {
+        background: #f1f5f9;
+        color: #334155;
+    }
+
+    .privacy-btn-secondary:hover {
+        background: #e2e8f0;
+        color: #1e293b;
+    }
+
+    @@media (max-width: 600px) {
+        .privacy-card {
+            padding: 25px 20px;
+        }
+
+        .privacy-actions {
+            flex-direction: column;
+        }
+
+        .privacy-btn {
+            text-align: center;
+        }
+    }
+</style>
+
+<div class="privacy-page">
+    <div class="privacy-container">
+        <div class="privacy-card">
+
+            <div class="privacy-icon">&#128274;</div>
+
+            <h1 class="privacy-title">Privacy Policy</h1>
+
+            <p class="privacy-subtitle">
+                Your privacy matters. This page explains how
+                MyFirstMVCApp handles employee information and
+                access to its features.
+            </p>
+
+            <div class="privacy-section">
+                <h2>1. Information We Manage</h2>
+                <p>
+                    This application is designed to manage employee
+                    records, including employee names, email addresses,
+                    departments, and designations.
+                </p>
+            </div>
+
+            <div class="privacy-section">
+                <h2>2. How Information Is Used</h2>
+                <p>
+                    Employee information is used to support employee
+                    record management, such as viewing, adding, and
+                    updating employee details.
+                </p>
+            </div>
+
+            <div class="privacy-section">
+                <h2>3. Authentication and Access</h2>
+                <p>
+                    Certain pages require users to sign in before
+                    accessing employee management features. Access
+                    should be restricted according to the application's
+                    authorization rules.
+                </p>
+            </div>
+
+            <div class="privacy-section">
+                <h2>4. Data Protection</h2>
+                <p>
+                    The application should use appropriate security
+                    practices to protect stored information, user
+                    credentials, and authenticated sessions.
+                </p>
+            </div>
+
+            <div class="privacy-section">
+                <h2>5. Contact and Questions</h2>
+                <p>
+                    If you have questions about how employee information
+                    is handled, contact the application administrator
+                    or your organization's designated support team.
+                </p>
+            </div>
+
+            <div class="privacy-note">
+                <strong>Important:</strong>
+                This page describes the intended handling of information.
+                Actual privacy and security practices depend on how the
+                application is configured and operated.
+            </div>
+
+            <div class="privacy-actions">
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="privacy-btn privacy-btn-primary">
+                    &larr; Back to Home
+                </a>
+
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <a asp-controller="Dashboard"
+                       asp-action="Index"
+                       class="privacy-btn privacy-btn-secondary">
+                        Go to Dashboard
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Auth"
+                       asp-action="Login"
+                       class="privacy-btn privacy-btn-secondary">
+                        Sign In
+                    </a>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>

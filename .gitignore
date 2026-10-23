@@ -1,7 +1,6 @@
-﻿################################################################################
+################################################################################
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
 /.vs/MyFirstMVCApp.slnx
-/MyFirstMVCApp
 /.vs/MyFirstMVCApp/CopilotIndices/18.4.114.215

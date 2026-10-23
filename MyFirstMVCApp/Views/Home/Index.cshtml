@@ -1,0 +1,265 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<style>
+    .home-page {
+        min-height: 80vh;
+        padding: 40px 20px;
+        background: linear-gradient(135deg, #eef4ff, #e0eaff, #f5f7ff);
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .home-content {
+        max-width: 850px;
+        text-align: center;
+        padding: 45px 30px;
+    }
+
+    .home-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        margin-bottom: 22px;
+        border-radius: 30px;
+        background: #dbeafe;
+        color: #1d4ed8;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .home-title {
+        color: #172554;
+        font-size: clamp(34px, 5vw, 54px);
+        line-height: 1.2;
+        font-weight: 800;
+        margin-bottom: 20px;
+    }
+
+    .home-title span {
+        background: linear-gradient(135deg, #2563eb, #6366f1);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .home-description {
+        max-width: 650px;
+        margin: 0 auto 30px;
+        color: #64748b;
+        font-size: 18px;
+        line-height: 1.8;
+    }
+
+    .home-actions {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-bottom: 45px;
+    }
+
+    .home-btn {
+        display: inline-block;
+        padding: 13px 24px;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .home-btn-primary {
+        color: white;
+        background: linear-gradient(135deg, #2563eb, #4f46e5);
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.2);
+    }
+
+    .home-btn-primary:hover {
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(37, 99, 235, 0.3);
+    }
+
+    .home-btn-secondary {
+        color: #1e40af;
+        background: white;
+        border: 1px solid #dbeafe;
+    }
+
+    .home-btn-secondary:hover {
+        background: #eff6ff;
+        color: #1d4ed8;
+        transform: translateY(-3px);
+    }
+
+    .home-features {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 18px;
+        text-align: left;
+    }
+
+    .feature-card {
+        padding: 22px 18px;
+        background: rgba(255, 255, 255, 0.85);
+        border: 1px solid #e5edfb;
+        border-radius: 16px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 25px rgba(30, 64, 175, 0.1);
+    }
+
+    .feature-icon {
+        width: 46px;
+        height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: #dbeafe;
+        color: #1d4ed8;
+        font-size: 23px;
+        margin-bottom: 16px;
+    }
+
+    .feature-card h3 {
+        color: #1e293b;
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 9px;
+    }
+
+    .feature-card p {
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .home-privacy {
+        margin-top: 30px;
+        font-size: 14px;
+        color: #64748b;
+    }
+
+    .home-privacy a {
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .home-privacy a:hover {
+        text-decoration: underline;
+    }
+
+    @@media (max-width: 650px) {
+        .home-content {
+            padding: 25px 5px;
+        }
+
+        .home-features {
+            grid-template-columns: 1fr;
+        }
+
+        .home-description {
+            font-size: 16px;
+        }
+
+        .home-actions {
+            flex-direction: column;
+        }
+
+        .home-btn {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="home-page">
+    <div class="home-content">
+
+        <div class="home-badge">
+            EMPLOYEE MANAGEMENT SYSTEM
+        </div>
+
+        <h1 class="home-title">
+            Welcome to <span>MyFirstMVCApp</span>
+        </h1>
+
+        <p class="home-description">
+            Manage your employee records with ease.
+            Organize employee information, maintain accurate records,
+            and keep your workplace data accessible in one place.
+        </p>
+
+        <div class="home-actions">
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <a asp-controller="Dashboard"
+                   asp-action="Index"
+                   class="home-btn home-btn-primary">
+                    Go to Dashboard &rarr;
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Auth"
+                   asp-action="Login"
+                   class="home-btn home-btn-primary">
+                    Get Started &rarr;
+                </a>
+
+                <a asp-controller="Auth"
+                   asp-action="Registration"
+                   class="home-btn home-btn-secondary">
+                    Create Account
+                </a>
+            }
+        </div>
+
+        <div class="home-features">
+
+            <div class="feature-card">
+                <div class="feature-icon">&#128100;</div>
+                <h3>Employee Records</h3>
+                <p>
+                    Keep employee names, contact details,
+                    departments, and designations organized.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">&#128203;</div>
+                <h3>Easy Management</h3>
+                <p>
+                    Add, view, update, and manage employee
+                    information through a simple interface.
+                </p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">&#128274;</div>
+                <h3>Secure Access</h3>
+                <p>
+                    Provide authenticated access to employee
+                    management features.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="home-privacy">
+            Learn more about how your information is handled:
+            <a asp-controller="Home" asp-action="Privacy">
+                Privacy Policy
+            </a>
+        </div>
+
+    </div>
+</div>
