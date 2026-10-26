@@ -82,12 +82,18 @@ namespace MyFirstMVCApp.Controllers
                 Password = dto.Password
             };
 
+
             _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+
+            int rowsAffected = await _context.SaveChangesAsync();
+
+            Console.WriteLine($"Users inserted: {rowsAffected}");
+            Console.WriteLine($"Generated UserId: {user.UserId}");
 
             TempData["Message"] = "Registration successful. Please log in.";
 
             return RedirectToAction("Login");
+
         }
 
         // Login an existing user
@@ -125,7 +131,7 @@ namespace MyFirstMVCApp.Controllers
             }
 
             // Generate JWT token
-            var token = GenerateJwtToken(user.Username,user.Email);
+            var token = GenerateJwtToken(user.Username, user.Email);
 
             // Store token in an HTTP-only cookie
             var cookieOptions = new CookieOptions
@@ -170,7 +176,7 @@ namespace MyFirstMVCApp.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-        
+
         // Logout
 
 

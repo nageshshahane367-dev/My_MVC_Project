@@ -37,14 +37,15 @@ builder.Services
 
         var key = Encoding.UTF8.GetBytes(jwtKey);
 
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = false,
-            ValidateAudience = false,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(key)
-        };
+        options.TokenValidationParameters =
+            new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key)
+            };
 
         options.Events = new JwtBearerEvents
         {
@@ -73,6 +74,91 @@ builder.Services
 
 var app = builder.Build();
 
+// DATABASE DIAGNOSTICS
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider
+        .GetRequiredService<AppDbContext>();
+
+    var connection = db.Database.GetDbConnection();
+
+    Console.WriteLine("\n========== DATABASE DEBUG ==========");
+
+    Console.WriteLine($"Configured Server: {connection.DataSource}");
+    Console.WriteLine($"Configured Database: {connection.Database}");
+
+    try
+    {
+        await db.Database.OpenConnectionAsync();
+
+        // Print the actual server and database
+        await using (var command = connection.CreateCommand())
+        {
+            command.CommandText = """
+                SELECT
+                    @@SERVERNAME AS ServerName,
+                    DB_NAME() AS DatabaseName;
+                """;
+
+            await using var reader =
+                await command.ExecuteReaderAsync();
+
+            while (await reader.ReadAsync())
+            {
+                Console.WriteLine(
+                    $"Actual Server: {reader["ServerName"]}");
+
+                Console.WriteLine(
+                    $"Actual Database: {reader["DatabaseName"]}");
+            }
+        }
+
+        // Check whether the expected tables exist
+        await using (var command = connection.CreateCommand())
+        {
+            command.CommandText = """
+                SELECT
+                    TABLE_SCHEMA,
+                    TABLE_NAME
+                FROM INFORMATION_SCHEMA.TABLES
+                WHERE TABLE_TYPE = 'BASE TABLE'
+                ORDER BY TABLE_SCHEMA, TABLE_NAME;
+                """;
+
+            await using var reader =
+                await command.ExecuteReaderAsync();
+
+            Console.WriteLine("\nTables found in this database:");
+
+            bool foundTables = false;
+
+            while (await reader.ReadAsync())
+            {
+                foundTables = true;
+
+                Console.WriteLine(
+                    $"{reader["TABLE_SCHEMA"]}.{reader["TABLE_NAME"]}");
+            }
+
+            if (!foundTables)
+            {
+                Console.WriteLine("No visible base tables found.");
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(
+            $"DATABASE DIAGNOSTIC ERROR: {ex.Message}");
+    }
+    finally
+    {
+        await db.Database.CloseConnectionAsync();
+    }
+
+    Console.WriteLine("====================================\n");
+}
+
 Console.WriteLine("TEST: Updated Program.cs is running");
 
 // Configure the HTTP request pipeline
@@ -98,7 +184,8 @@ app.MapControllerRoute(
 
 // Print registered MVC actions
 var actionProvider =
-    app.Services.GetRequiredService<IActionDescriptorCollectionProvider>();
+    app.Services.GetRequiredService
+        <IActionDescriptorCollectionProvider>();
 
 Console.WriteLine("\n========== MVC ACTIONS ==========");
 
