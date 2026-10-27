@@ -1,267 +1,94 @@
-﻿ @using MyFirstMVCApp.Dto
+﻿@using MyFirstMVCApp.Dto
 @model EmployeeDto
 
 @{
     ViewData["Title"] = "Update Employee";
 }
 
-<style>
-    body {
-        background: #f3f6fc;
-    }
+<div class="form-page">
+    <a asp-controller="Dashboard" asp-action="Index"
+       class="back-link">← Back to employees</a>
 
-    .update-page {
-        min-height: 90vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 40px 15px;
-        background: linear-gradient(135deg, #eef2ff, #f8faff);
-    }
-
-    .update-card {
-        width: 100%;
-        max-width: 520px;
-        background: #ffffff;
-        border: none;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 15px 45px rgba(31, 41, 55, 0.12);
-    }
-
-    .update-header {
-        padding: 30px 30px 25px;
-        color: white;
-        background: linear-gradient(135deg, #2563eb, #7c3aed);
-    }
-
-    .update-icon {
-        width: 58px;
-        height: 58px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 16px;
-        border-radius: 16px;
-        background: rgba(255, 255, 255, 0.18);
-        font-size: 27px;
-    }
-
-    .update-header h2 {
-        margin: 0 0 8px;
-        font-size: 26px;
-        font-weight: 700;
-    }
-
-    .update-header p {
-        margin: 0;
-        color: rgba(255, 255, 255, 0.85);
-        font-size: 14px;
-    }
-
-    .update-body {
-        padding: 30px;
-    }
-
-    .form-label {
-        margin-bottom: 8px;
-        color: #374151;
-        font-size: 14px;
-        font-weight: 600;
-    }
-
-    .input-group-text {
-        color: #64748b;
-        background: #f8fafc;
-        border-color: #dbe3ef;
-        border-radius: 10px 0 0 10px;
-    }
-
-    .form-control {
-        min-height: 46px;
-        border: 1px solid #dbe3ef;
-        border-radius: 0 10px 10px 0;
-        font-size: 14px;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .form-control:focus {
-        border-color: #6366f1;
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
-    }
-
-    .field-icon {
-        width: 18px;
-        text-align: center;
-    }
-
-    .btn-save {
-        min-height: 47px;
-        border: none;
-        border-radius: 10px;
-        color: white;
-        background: linear-gradient(135deg, #2563eb, #7c3aed);
-        font-weight: 600;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .btn-save:hover {
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 18px rgba(79, 70, 229, 0.25);
-    }
-
-    .btn-cancel {
-        min-height: 47px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid #dbe3ef;
-        border-radius: 10px;
-        color: #475569;
-        background: white;
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    .btn-cancel:hover {
-        color: #1e293b;
-        background: #f8fafc;
-    }
-
-    .validation-summary {
-        border-radius: 10px;
-    }
-
-    @@media (max-width: 576px) {
-        .update-body {
-            padding: 22px;
-        }
-
-        .update-header {
-            padding: 25px 22px;
-        }
-    }
-</style>
-
-<div class="update-page">
-    <div class="update-card">
-
-        <div class="update-header">
-            <div class="update-icon">✎</div>
-            <h2>Update Employee</h2>
-            <p>Update employee information using the form below.</p>
+    <div class="form-card mt-3">
+        <div class="form-card-heading">
+            <div class="form-heading-icon">✎</div>
+            <span class="eyebrow">EMPLOYEE MANAGEMENT</span>
+            <h1 class="page-title">Update Employee</h1>
+            <p class="text-secondary mb-0">
+                Update the details and save your changes.
+            </p>
         </div>
 
-        <div class="update-body">
+        @if (ViewBag.Message != null)
+        {
+            <div class="alert alert-warning" role="alert">
+                @ViewBag.Message
+            </div>
+        }
 
-            @if (ViewBag.Message != null)
-            {
-                <div class="alert alert-warning alert-dismissible fade show"
-                     role="alert">
-                    <strong>Notice:</strong> @ViewBag.Message
-                    <button type="button" class="btn-close"
-                            data-bs-dismiss="alert"
-                            aria-label="Close"></button>
-                </div>
-            }
+        <form asp-controller="Dashboard"
+              asp-action="UpdateEmployeeDetail"
+              method="post">
+            @Html.AntiForgeryToken()
 
             <div asp-validation-summary="ModelOnly"
-                 class="alert alert-danger validation-summary"
-                 role="alert"></div>
+                 class="text-danger small mb-3"></div>
 
-            <form asp-controller="Dashboard"
-                  asp-action="UpdateEmployeeDetail"
-                  method="post">
+            <input asp-for="Id" type="hidden" />
 
-                @Html.AntiForgeryToken()
+            <div class="mb-3">
+                <label asp-for="EmployeeName" class="form-label">
+                    Employee Name
+                </label>
+                <input asp-for="EmployeeName"
+                       class="form-control app-input" />
+                <span asp-validation-for="EmployeeName"
+                      class="text-danger small"></span>
+            </div>
 
-                <input type="hidden" asp-for="Id" />
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">
+                    Email Address
+                </label>
+                <input asp-for="Email"
+                       type="email"
+                       class="form-control app-input" />
+                <span asp-validation-for="Email"
+                      class="text-danger small"></span>
+            </div>
 
-                <div class="mb-4">
-                    <label asp-for="EmployeeName" class="form-label">
-                        Employee Name
-                    </label>
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <span class="field-icon">♙</span>
-                        </span>
-                        <input asp-for="EmployeeName"
-                               class="form-control"
-                               placeholder="Enter employee name" />
-                    </div>
-                    <span asp-validation-for="EmployeeName"
-                          class="text-danger small"></span>
-                </div>
+            <div class="mb-3">
+                <label asp-for="Department" class="form-label">
+                    Department
+                </label>
+                <input asp-for="Department"
+                       class="form-control app-input" />
+                <span asp-validation-for="Department"
+                      class="text-danger small"></span>
+            </div>
 
-                <div class="mb-4">
-                    <label asp-for="Department" class="form-label">
-                        Department
-                    </label>
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <span class="field-icon">▤</span>
-                        </span>
-                        <input asp-for="Department"
-                               class="form-control"
-                               placeholder="Enter department" />
-                    </div>
-                    <span asp-validation-for="Department"
-                          class="text-danger small"></span>
-                </div>
+            <div class="mb-4">
+                <label asp-for="Designation" class="form-label">
+                    Designation
+                </label>
+                <input asp-for="Designation"
+                       class="form-control app-input" />
+                <span asp-validation-for="Designation"
+                      class="text-danger small"></span>
+            </div>
 
-                <div class="mb-4">
-                    <label asp-for="Email" class="form-label">
-                        Email Address
-                    </label>
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <span class="field-icon">✉</span>
-                        </span>
-                        <input asp-for="Email"
-                               type="email"
-                               class="form-control"
-                               placeholder="name@example.com" />
-                    </div>
-                    <span asp-validation-for="Email"
-                          class="text-danger small"></span>
-                </div>
-
-                <div class="mb-4">
-                    <label asp-for="Designation" class="form-label">
-                        Designation
-                    </label>
-                    <div class="input-group">
-                        <span class="input-group-text">
-                            <span class="field-icon">▣</span>
-                        </span>
-                        <input asp-for="Designation"
-                               class="form-control"
-                               placeholder="Enter designation" />
-                    </div>
-                    <span asp-validation-for="Designation"
-                          class="text-danger small"></span>
-                </div>
-
-                <div class="row g-3 mt-2">
-                    <div class="col-7">
-                        <button type="submit"
-                                class="btn btn-save w-100">
-                            ✓ Save Changes
-                        </button>
-                    </div>
-
-                    <div class="col-5">
-                        <a asp-controller="Dashboard"
-                           asp-action="Index"
-                           class="btn-cancel w-100">
-                            Cancel
-                        </a>
-                    </div>
-                </div>
-
-            </form>
-        </div>
+            <div class="d-flex flex-column flex-sm-row gap-2">
+                <button type="submit"
+                        class="btn btn-primary app-primary-btn flex-grow-1">
+                    Save Changes
+                </button>
+                <a asp-controller="Dashboard"
+                   asp-action="Index"
+                   class="btn btn-light app-cancel-btn">
+                    Cancel
+                </a>
+            </div>
+        </form>
     </div>
 </div>
 

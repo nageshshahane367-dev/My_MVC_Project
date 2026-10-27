@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyFirstMVCApp.Dto;
 using MyFirstMVCApp.Models;
+using MyFirstMVCApp.Services;
 
 namespace MyFirstMVCApp.Controllers
 {
@@ -10,40 +12,54 @@ namespace MyFirstMVCApp.Controllers
     public class DashboardController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IEmployeeDescriptionService _employeeDescriptionService;
 
-        public DashboardController(AppDbContext context)
+        public DashboardController(
+            AppDbContext context,
+            IEmployeeDescriptionService employeeDescriptionService)
         {
             _context = context;
+            _employeeDescriptionService = employeeDescriptionService;
         }
 
+        // Admin, HR and Employee can view the employee list
+        [HttpGet]
+        [Authorize(Roles = "Admin,HR,Employee")]
         public async Task<IActionResult> Index()
         {
             var list = await _context.Employees
                 .Select(x => new EmployeeDto
                 {
+                    Id = x.Id,
                     EmployeeName = x.EmployeeName,
                     Department = x.Department,
                     Email = x.Email,
-                    Designation = x.Designation,
-                    Id = x.Id
+                    Designation = x.Designation
                 })
                 .ToListAsync();
 
             return View(list);
         }
 
+        // Open the Add Employee form
         [HttpGet]
+        [Authorize(Roles = "Admin,HR,Employee")]
         public IActionResult AddEmployee()
         {
             return View();
         }
 
+        // Redirect to the Add Employee form
+        [HttpGet]
+        [Authorize(Roles = "Admin,HR,Employee")]
         public IActionResult RedirectToEmployeeForm()
         {
             return RedirectToAction(nameof(AddEmployee));
         }
 
+        // Add an employee
         [HttpPost]
+        [Authorize(Roles = "Admin,HR,Employee")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddEmployeeDetail(EmployeeDto dto)
         {
@@ -59,7 +75,7 @@ namespace MyFirstMVCApp.Controllers
             if (exists)
             {
                 ViewBag.Message =
-                    "Employee with the same email already exists.";
+                    "An employee with the same email already exists.";
 
                 return View("AddEmployee", dto);
             }
@@ -78,7 +94,9 @@ namespace MyFirstMVCApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // Only Admin can delete employees
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteEmployee(int id)
         {
@@ -96,7 +114,9 @@ namespace MyFirstMVCApp.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // Open the Update Employee form
         [HttpGet]
+        [Authorize(Roles = "Admin,HR,Employee")]
         public async Task<IActionResult> UpdateEmployee(int id)
         {
             var data = await _context.Employees
@@ -119,7 +139,9 @@ namespace MyFirstMVCApp.Controllers
             return View(dto);
         }
 
+        // Save employee updates
         [HttpPost]
+        [Authorize(Roles = "Admin,HR,Employee")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateEmployeeDetail(EmployeeDto dto)
         {
@@ -150,14 +172,72 @@ namespace MyFirstMVCApp.Controllers
                 return View("UpdateEmployee", dto);
             }
 
-            data.Email = dto.Email;
             data.EmployeeName = dto.EmployeeName;
-            data.Designation = dto.Designation;
             data.Department = dto.Department;
+            data.Email = dto.Email;
+            data.Designation = dto.Designation;
 
             await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
+        }
+
+        // Generate an AI employee description
+        [HttpPost]
+        [Authorize(Roles = "Admin,HR,Employee")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GenerateEmployeeDescription(
+            [FromBody] EmployeeDescriptionRequest request,
+            CancellationToken cancellationToken)
+        {
+            if (request == null ||
+                string.IsNullOrWhiteSpace(request.Department) ||
+                string.IsNullOrWhiteSpace(request.Designation))
+            {
+                return BadRequest(new
+                {
+                    error = "Please enter a department and designation."
+                });
+            }
+
+            if (request.Department.Length > 100 ||
+                request.Designation.Length > 100)
+            {
+                return BadRequest(new
+                {
+                    error = "Department and designation must be 100 characters or fewer."
+                });
+            }
+
+            try
+            {
+                var description =
+                    await _employeeDescriptionService.GenerateDescriptionAsync(
+                        request.Department.Trim(),
+                        request.Designation.Trim(),
+                        cancellationToken);
+
+                return Json(new { description });
+            }
+
+            catch (HttpRequestException ex)
+            {
+                // Development debugging only.
+                Console.WriteLine($"AI service error: {ex.Message}");
+
+                return StatusCode(502, new
+                {
+                    error = ex.Message
+                });
+            }
+
+            catch (InvalidOperationException)
+            {
+                return StatusCode(500, new
+                {
+                    error = "The AI service is not configured correctly or returned no description."
+                });
+            }
         }
     }
 }

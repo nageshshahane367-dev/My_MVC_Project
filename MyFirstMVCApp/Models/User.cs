@@ -16,5 +16,9 @@ namespace MyFirstMVCApp.Models
         [Required]
         [EmailAddress]
         public string Email { get; set; } = string.Empty;
+
+         [Required]
+        [MaxLength(20)]
+        public string Role { get; set; } = "Employee";
     }
 }

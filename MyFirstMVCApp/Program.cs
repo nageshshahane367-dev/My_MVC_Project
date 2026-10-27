@@ -1,6 +1,9 @@
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using MyFirstMVCApp.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MyFirstMVCApp.Models;
@@ -44,7 +47,11 @@ builder.Services
                 ValidateAudience = false,
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key)
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                    NameClaimType = ClaimTypes.Name,
+                   RoleClaimType = ClaimTypes.Role,
+
+    ClockSkew = TimeSpan.FromMinutes(1)
             };
 
         options.Events = new JwtBearerEvents
@@ -72,6 +79,10 @@ builder.Services
         };
     });
 
+builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddHttpClient<
+    IEmployeeDescriptionService,
+    OpenAiEmployeeDescriptionService>();
 var app = builder.Build();
 
 // DATABASE DIAGNOSTICS

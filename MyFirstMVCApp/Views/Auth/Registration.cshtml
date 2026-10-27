@@ -1,215 +1,14 @@
-﻿@using MyFirstMVCApp.Dto
-@model UserDto
+﻿
+@model MyFirstMVCApp.Dto.UserDto
 
-@{
-    ViewData["Title"] = "Register";
-}
-
-<style>
-    .register-page {
-        min-height: 85vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 35px 15px;
-        background: linear-gradient(135deg, #eef4ff, #e0eaff, #f5f7ff);
-        border-radius: 16px;
-    }
-
-    .register-card {
-        width: 100%;
-        max-width: 430px;
-        padding: 38px 35px;
-        background: #ffffff;
-        border-radius: 20px;
-        box-shadow: 0 15px 45px rgba(30, 64, 175, 0.14);
-        border: 1px solid #edf1f8;
-    }
-
-    .register-logo {
-        width: 65px;
-        height: 65px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 18px;
-        border-radius: 18px;
-        background: linear-gradient(135deg, #2563eb, #4f46e5);
-        color: white;
-        font-size: 29px;
-        font-weight: 700;
-        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
-    }
-
-    .register-title {
-        color: #172554;
-        font-size: 28px;
-        font-weight: 750;
-        text-align: center;
-        margin-bottom: 8px;
-    }
-
-    .register-subtitle {
-        color: #64748b;
-        text-align: center;
-        font-size: 14px;
-        margin-bottom: 28px;
-    }
-
-    .register-card .form-label {
-        color: #334155;
-        font-weight: 600;
-        font-size: 14px;
-        margin-bottom: 8px;
-    }
-
-    .register-card .form-control {
-        min-height: 48px;
-        border: 1px solid #dbe3ef;
-        border-radius: 10px;
-        padding: 12px 14px;
-        font-size: 14px;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .register-card .form-control:focus {
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
-    }
-
-    .register-btn {
-        width: 100%;
-        min-height: 48px;
-        border: none;
-        border-radius: 10px;
-        background: linear-gradient(135deg, #2563eb, #4f46e5);
-        color: white;
-        font-size: 16px;
-        font-weight: 600;
-        margin-top: 8px;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .register-btn:hover {
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
-    }
-
-    .register-footer {
-        text-align: center;
-        margin-top: 24px;
-        color: #64748b;
-        font-size: 14px;
-    }
-
-    .register-footer a {
-        color: #2563eb;
-        font-weight: 600;
-        text-decoration: none;
-    }
-
-    .register-footer a:hover {
-        text-decoration: underline;
-    }
-
-    .register-message {
-        color: #dc2626;
-        font-size: 14px;
-        text-align: center;
-        margin-bottom: 15px;
-    }
-
-    .register-validation {
-        color: #dc2626;
-        font-size: 12px;
-    }
-
-    .register-navbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 14px 22px;
-        margin-bottom: 18px;
-        border-radius: 12px;
-        background: #ffffff;
-        box-shadow: 0 4px 15px rgba(15, 23, 42, 0.06);
-    }
-
-    .register-brand {
-        color: #1e3a8a;
-        font-size: 20px;
-        font-weight: 750;
-        text-decoration: none;
-    }
-
-    .register-nav-link {
-        color: #475569;
-        text-decoration: none;
-        font-weight: 600;
-        margin-left: 18px;
-    }
-
-    .register-nav-link:hover {
-        color: #2563eb;
-    }
-
-    @@media (max-width: 480px) {
-        .register-card {
-            padding: 30px 22px;
-        }
-
-        .register-navbar {
-            padding: 12px;
-        }
-
-        .register-brand {
-            font-size: 17px;
-        }
-
-        .register-nav-link {
-            margin-left: 10px;
-            font-size: 13px;
-        }
-    }
-</style>
-
-<nav class="register-navbar">
-    <a class="register-brand" asp-controller="Home" asp-action="Index">
-        MyFirstMVC
-    </a>
-
-    <div>
-        <a class="register-nav-link"
-           asp-controller="Home" asp-action="Index">Home</a>
-
-        <a class="register-nav-link"
-           asp-controller="Auth" asp-action="Login">Login</a>
-    </div>
-</nav>
-
-<div class="register-page">
-    <div class="register-card">
-
-        <div class="register-logo">+</div>
-
-        <h2 class="register-title">Create Account</h2>
-
-        <p class="register-subtitle">
-            Register to get started with MyFirstMVC
-        </p>
+<div class="container py-5">
+    <div class="card shadow mx-auto p-4" style="max-width: 450px;">
+        <h2 class="text-center mb-4">Create Account</h2>
 
         @if (ViewBag.Message != null)
         {
-            <div class="register-message" role="alert">
+            <div class="alert alert-danger">
                 @ViewBag.Message
-            </div>
-        }
-
-        @if (TempData["Message"] != null)
-        {
-            <div class="alert alert-success" role="alert">
-                @TempData["Message"]
             </div>
         }
 
@@ -220,66 +19,71 @@
             @Html.AntiForgeryToken()
 
             <div asp-validation-summary="ModelOnly"
-                 class="register-validation mb-3"></div>
+                 class="text-danger mb-3">
+            </div>
 
             <div class="mb-3">
                 <label asp-for="Username" class="form-label">
                     Username
                 </label>
-
                 <input asp-for="Username"
                        class="form-control"
-                       placeholder="Enter your username"
-                       autocomplete="username"
-                       required />
-
+                       placeholder="Enter username" />
                 <span asp-validation-for="Username"
-                      class="register-validation"></span>
+                      class="text-danger"></span>
             </div>
 
             <div class="mb-3">
                 <label asp-for="Email" class="form-label">
-                    Email Address
+                    Email
                 </label>
-
                 <input asp-for="Email"
                        type="email"
                        class="form-control"
-                       placeholder="Enter your email"
-                       autocomplete="email"
-                       required />
-
+                       placeholder="Enter email" />
                 <span asp-validation-for="Email"
-                      class="register-validation"></span>
+                      class="text-danger"></span>
             </div>
 
             <div class="mb-3">
                 <label asp-for="Password" class="form-label">
                     Password
                 </label>
-
                 <input asp-for="Password"
                        type="password"
                        class="form-control"
-                       placeholder="Create a password"
-                       autocomplete="new-password"
-                       required />
-
+                       placeholder="Enter password" />
                 <span asp-validation-for="Password"
-                      class="register-validation"></span>
+                      class="text-danger"></span>
             </div>
 
-            <button type="submit" class="btn register-btn">
+            <div class="mb-4">
+                <label asp-for="Role" class="form-label">
+                    Select Role
+                </label>
+
+                <select asp-for="Role" class="form-select">
+                    <option value="">-- Select Role --</option>
+                    <option value="Employee">Employee</option>
+                    <option value="HR">HR</option>
+                    <option value="Admin">Admin</option>
+                </select>
+
+                <span asp-validation-for="Role"
+                      class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">
                 Create Account
             </button>
-        </form>
 
-        <div class="register-footer">
-            Already have an account?
-            <a asp-controller="Auth" asp-action="Login">
-                Login here
-            </a>
-        </div>
+            <p class="text-center mt-3 mb-0">
+                Already have an account?
+                <a asp-controller="Auth" asp-action="Login">
+                    Login here
+                </a>
+            </p>
+        </form>
     </div>
 </div>
 

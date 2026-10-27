@@ -1,146 +1,29 @@
-﻿@using MyFirstMVCApp.Dto
+﻿
+@using MyFirstMVCApp.Dto
 @model EmployeeDto
 
 @{
     ViewData["Title"] = "Add Employee";
 }
 
-<style>
-    .employee-page {
-        min-height: 85vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 35px 15px;
-        background: linear-gradient(135deg, #eef4ff, #e0eaff, #f5f7ff);
-        border-radius: 16px;
-    }
+<div class="form-page">
+    <a asp-controller="Dashboard"
+       asp-action="Index"
+       class="back-link">← Back to employees</a>
 
-    .employee-card {
-        width: 100%;
-        max-width: 480px;
-        padding: 35px;
-        background: #fff;
-        border: 1px solid #edf1f8;
-        border-radius: 20px;
-        box-shadow: 0 15px 45px rgba(30, 64, 175, 0.14);
-    }
-
-    .employee-logo {
-        width: 60px;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 16px;
-        border-radius: 18px;
-        background: linear-gradient(135deg, #2563eb, #4f46e5);
-        color: white;
-        font-size: 32px;
-        font-weight: 500;
-    }
-
-    .employee-title {
-        color: #172554;
-        text-align: center;
-        font-size: 27px;
-        font-weight: 750;
-        margin-bottom: 8px;
-    }
-
-    .employee-subtitle {
-        color: #64748b;
-        text-align: center;
-        font-size: 14px;
-        margin-bottom: 28px;
-    }
-
-    .employee-card .form-label {
-        color: #334155;
-        font-size: 14px;
-        font-weight: 600;
-        margin-bottom: 8px;
-    }
-
-    .employee-card .form-control {
-        min-height: 47px;
-        padding: 11px 14px;
-        border: 1px solid #dbe3ef;
-        border-radius: 10px;
-        font-size: 14px;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .employee-card .form-control:focus {
-        border-color: #3b82f6;
-        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
-    }
-
-    .employee-submit {
-        width: 100%;
-        min-height: 48px;
-        margin-top: 8px;
-        border: none;
-        border-radius: 10px;
-        background: linear-gradient(135deg, #2563eb, #4f46e5);
-        color: white;
-        font-weight: 600;
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .employee-submit:hover {
-        color: white;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
-    }
-
-    .employee-back {
-        display: block;
-        margin-top: 20px;
-        text-align: center;
-        color: #2563eb;
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: 600;
-    }
-
-    .employee-back:hover {
-        text-decoration: underline;
-    }
-
-    .employee-message {
-        margin-bottom: 18px;
-        text-align: center;
-        color: #dc2626;
-        font-size: 14px;
-    }
-
-    .employee-validation {
-        color: #dc2626;
-        font-size: 12px;
-    }
-
-    @@media (max-width: 480px) {
-        .employee-card {
-            padding: 26px 20px;
-        }
-    }
-</style>
-
-<div class="employee-page">
-    <div class="employee-card">
-
-        <div class="employee-logo">+</div>
-
-        <h2 class="employee-title">Add Employee</h2>
-
-        <p class="employee-subtitle">
-            Enter the employee details below
-        </p>
+    <div class="form-card mt-3">
+        <div class="form-card-heading">
+            <div class="form-heading-icon">+</div>
+            <span class="eyebrow">EMPLOYEE MANAGEMENT</span>
+            <h1 class="page-title">Add New Employee</h1>
+            <p class="text-secondary mb-0">
+                Enter the employee's information below.
+            </p>
+        </div>
 
         @if (ViewBag.Message != null)
         {
-            <div class="employee-message" role="alert">
+            <div class="alert alert-warning" role="alert">
                 @ViewBag.Message
             </div>
         }
@@ -152,81 +35,203 @@
             @Html.AntiForgeryToken()
 
             <div asp-validation-summary="ModelOnly"
-                 class="employee-validation mb-3"></div>
+                 class="text-danger small mb-3"></div>
 
             <div class="mb-3">
                 <label asp-for="EmployeeName" class="form-label">
                     Employee Name
                 </label>
-
                 <input asp-for="EmployeeName"
-                       class="form-control"
-                       placeholder="Enter employee name"
-                       autocomplete="name"
-                       required />
-
+                       class="form-control app-input"
+                       placeholder="Enter full name" />
                 <span asp-validation-for="EmployeeName"
-                      class="employee-validation"></span>
-            </div>
-
-            <div class="mb-3">
-                <label asp-for="Department" class="form-label">
-                    Department
-                </label>
-
-                <input asp-for="Department"
-                       class="form-control"
-                       placeholder="e.g. IT, HR, Finance"
-                       required />
-
-                <span asp-validation-for="Department"
-                      class="employee-validation"></span>
+                      class="text-danger small"></span>
             </div>
 
             <div class="mb-3">
                 <label asp-for="Email" class="form-label">
                     Email Address
                 </label>
-
                 <input asp-for="Email"
                        type="email"
-                       class="form-control"
-                       placeholder="Enter employee email"
-                       autocomplete="email"
-                       required />
-
+                       class="form-control app-input"
+                       placeholder="name@company.com" />
                 <span asp-validation-for="Email"
-                      class="employee-validation"></span>
+                      class="text-danger small"></span>
             </div>
 
             <div class="mb-3">
+                <label asp-for="Department" class="form-label">
+                    Department
+                </label>
+                <input asp-for="Department"
+                       class="form-control app-input"
+                       placeholder="e.g. Engineering" />
+                <span asp-validation-for="Department"
+                      class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
                 <label asp-for="Designation" class="form-label">
                     Designation
                 </label>
-
                 <input asp-for="Designation"
-                       class="form-control"
-                       placeholder="e.g. Software Developer"
-                       required />
-
+                       class="form-control app-input"
+                       placeholder="e.g. Software Developer" />
                 <span asp-validation-for="Designation"
-                      class="employee-validation"></span>
+                      class="text-danger small"></span>
             </div>
 
-            <button type="submit" class="btn employee-submit">
-                Add Employee
-            </button>
+            <!-- AI Employee Description Generator -->
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="text-primary fs-4">✦</span>
+                        <h5 class="mb-0">
+                            AI Employee Description Generator
+                        </h5>
+                    </div>
+
+                    <p class="text-secondary small">
+                        Generate a professional job description based
+                        on the department and designation above.
+                    </p>
+
+                    <button type="button"
+                            id="generateDescriptionBtn"
+                            class="btn btn-primary mb-3">
+                        <span id="generateBtnText">
+                            ✦ Generate with AI
+                        </span>
+                    </button>
+
+                    <div id="aiError"
+                         class="alert alert-danger d-none"
+                         role="alert"></div>
+
+                    <label for="generatedDescription"
+                           class="form-label fw-semibold">
+                        Generated Description
+                    </label>
+
+                    <textarea id="generatedDescription"
+                              class="form-control app-input"
+                              rows="5"
+                              maxlength="2000"
+                              placeholder="Your AI-generated description will appear here..."></textarea>
+
+                    <div class="form-text">
+                        Review and edit the generated text.
+                        This preview is not saved to the database.
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex flex-column flex-sm-row gap-2">
+                <button type="submit"
+                        class="btn btn-primary app-primary-btn flex-grow-1">
+                    Save Employee
+                </button>
+
+                <a asp-controller="Dashboard"
+                   asp-action="Index"
+                   class="btn btn-light app-cancel-btn">
+                    Cancel
+                </a>
+            </div>
         </form>
-
-        <a asp-controller="Dashboard"
-           asp-action="Index"
-           class="employee-back">
-            ← Back to Dashboard
-        </a>
-
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const button = document.getElementById(
+                "generateDescriptionBtn");
+
+            const buttonText = document.getElementById(
+                "generateBtnText");
+
+            const descriptionBox = document.getElementById(
+                "generatedDescription");
+
+            const errorBox = document.getElementById("aiError");
+
+            button.addEventListener("click", async function () {
+                const departmentInput =
+                    document.getElementById("Department");
+
+                const designationInput =
+                    document.getElementById("Designation");
+
+                const department = departmentInput?.value.trim();
+                const designation = designationInput?.value.trim();
+
+                if (!department || !designation) {
+                    errorBox.textContent =
+                        "Please enter Department and Designation first.";
+
+                    errorBox.classList.remove("d-none");
+                    return;
+                }
+
+                const token = document.querySelector(
+                    'input[name="__RequestVerificationToken"]'
+                )?.value;
+
+                if (!token) {
+                    errorBox.textContent =
+                        "Security token not found. Refresh the page and try again.";
+
+                    errorBox.classList.remove("d-none");
+                    return;
+                }
+
+                button.disabled = true;
+                buttonText.textContent = "Generating...";
+                errorBox.classList.add("d-none");
+
+                try {
+                    const response = await fetch(
+                        '@Url.Action("GenerateEmployeeDescription", "Dashboard")',
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "RequestVerificationToken": token
+                            },
+                            body: JSON.stringify({
+                                department: department,
+                                designation: designation
+                            })
+                        }
+                    );
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(
+                            data.error ||
+                            "Could not generate the description."
+                        );
+                    }
+
+                    descriptionBox.value = data.description || "";
+                }
+                catch (error) {
+                    errorBox.textContent =
+                        error.message ||
+                        "Something went wrong. Please try again.";
+
+                    errorBox.classList.remove("d-none");
+                }
+                finally {
+                    button.disabled = false;
+                    buttonText.textContent = "✦ Generate with AI";
+                }
+            });
+        });
+    </script>
 }
