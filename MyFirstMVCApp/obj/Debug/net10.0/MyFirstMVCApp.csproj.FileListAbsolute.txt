@@ -149,7 +149,7 @@ C:\Users\nageshs\Desktop\My_Project\MVC_App\MyFirstMVC\MyFirstMVCApp\obj\Debug\n
 C:\Users\nageshs\Desktop\My_Project\MVC_App\MyFirstMVC\MyFirstMVCApp\obj\Debug\net10.0\scopedcss\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\nageshs\Desktop\My_Project\MVC_App\MyFirstMVC\MyFirstMVCApp\obj\Debug\net10.0\scopedcss\bundle\MyFirstMVCApp.styles.css
 C:\Users\nageshs\Desktop\My_Project\MVC_App\MyFirstMVC\MyFirstMVCApp\obj\Debug\net10.0\scopedcss\projectbundle\MyFirstMVCApp.bundle.scp.css
-C:\Users\nageshs\Desktop\My_Project\MVC_App\MyFirstMVC\MyFirstMVCApp\obj\Debug\net10.0\compressed\wpoyrg7xh2-{0}-k45672ki64-k45672ki64.gz
+C:\Users\nageshs\Desktop\My_Project\MVC_App\MyFirstMVC\MyFirstMVCApp\obj\Debug\net10.0\compressed\wpoyrg7xh2-{0}-380eimzxa1-380eimzxa1.gz
 C:\Users\nageshs\Desktop\My_Project\MVC_App\MyFirstMVC\MyFirstMVCApp\obj\Debug\net10.0\compressed\tjssbcqalv-{0}-61n19gt1b8-61n19gt1b8.gz
 C:\Users\nageshs\Desktop\My_Project\MVC_App\MyFirstMVC\MyFirstMVCApp\obj\Debug\net10.0\compressed\t1uyd91j3d-{0}-xtxxf3hu2r-xtxxf3hu2r.gz
 C:\Users\nageshs\Desktop\My_Project\MVC_App\MyFirstMVC\MyFirstMVCApp\obj\Debug\net10.0\compressed\99jz4sm3dr-{0}-t1cqhe9u97-t1cqhe9u97.gz

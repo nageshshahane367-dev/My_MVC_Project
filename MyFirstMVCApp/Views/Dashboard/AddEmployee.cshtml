@@ -1,5 +1,4 @@
-﻿
-@using MyFirstMVCApp.Dto
+﻿@using MyFirstMVCApp.Dto
 @model EmployeeDto
 
 @{
@@ -82,51 +81,6 @@
                       class="text-danger small"></span>
             </div>
 
-            <!-- AI Employee Description Generator -->
-            <div class="card border-0 shadow-sm rounded-4 mb-4">
-                <div class="card-body p-4">
-                    <div class="d-flex align-items-center gap-2 mb-2">
-                        <span class="text-primary fs-4">✦</span>
-                        <h5 class="mb-0">
-                            AI Employee Description Generator
-                        </h5>
-                    </div>
-
-                    <p class="text-secondary small">
-                        Generate a professional job description based
-                        on the department and designation above.
-                    </p>
-
-                    <button type="button"
-                            id="generateDescriptionBtn"
-                            class="btn btn-primary mb-3">
-                        <span id="generateBtnText">
-                            ✦ Generate with AI
-                        </span>
-                    </button>
-
-                    <div id="aiError"
-                         class="alert alert-danger d-none"
-                         role="alert"></div>
-
-                    <label for="generatedDescription"
-                           class="form-label fw-semibold">
-                        Generated Description
-                    </label>
-
-                    <textarea id="generatedDescription"
-                              class="form-control app-input"
-                              rows="5"
-                              maxlength="2000"
-                              placeholder="Your AI-generated description will appear here..."></textarea>
-
-                    <div class="form-text">
-                        Review and edit the generated text.
-                        This preview is not saved to the database.
-                    </div>
-                </div>
-            </div>
-
             <div class="d-flex flex-column flex-sm-row gap-2">
                 <button type="submit"
                         class="btn btn-primary app-primary-btn flex-grow-1">
@@ -145,93 +99,4 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const button = document.getElementById(
-                "generateDescriptionBtn");
-
-            const buttonText = document.getElementById(
-                "generateBtnText");
-
-            const descriptionBox = document.getElementById(
-                "generatedDescription");
-
-            const errorBox = document.getElementById("aiError");
-
-            button.addEventListener("click", async function () {
-                const departmentInput =
-                    document.getElementById("Department");
-
-                const designationInput =
-                    document.getElementById("Designation");
-
-                const department = departmentInput?.value.trim();
-                const designation = designationInput?.value.trim();
-
-                if (!department || !designation) {
-                    errorBox.textContent =
-                        "Please enter Department and Designation first.";
-
-                    errorBox.classList.remove("d-none");
-                    return;
-                }
-
-                const token = document.querySelector(
-                    'input[name="__RequestVerificationToken"]'
-                )?.value;
-
-                if (!token) {
-                    errorBox.textContent =
-                        "Security token not found. Refresh the page and try again.";
-
-                    errorBox.classList.remove("d-none");
-                    return;
-                }
-
-                button.disabled = true;
-                buttonText.textContent = "Generating...";
-                errorBox.classList.add("d-none");
-
-                try {
-                    const response = await fetch(
-                        '@Url.Action("GenerateEmployeeDescription", "Dashboard")',
-                        {
-                            method: "POST",
-                            headers: {
-                                "Content-Type": "application/json",
-                                "RequestVerificationToken": token
-                            },
-                            body: JSON.stringify({
-                                department: department,
-                                designation: designation
-                            })
-                        }
-                    );
-
-                    const data = await response.json();
-
-                    if (!response.ok) {
-                        throw new Error(
-                            data.error ||
-                            "Could not generate the description."
-                        );
-                    }
-
-                    descriptionBox.value = data.description || "";
-                }
-                catch (error) {
-                    errorBox.textContent =
-                        error.message ||
-                        "Something went wrong. Please try again.";
-
-                    errorBox.classList.remove("d-none");
-                }
-                finally {
-                    button.disabled = false;
-                    buttonText.textContent = "✦ Generate with AI";
-                }
-            });
-        });
-    </script>
 }

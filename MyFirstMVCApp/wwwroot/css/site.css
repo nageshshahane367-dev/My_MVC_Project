@@ -11,8 +11,13 @@
     --shadow: 0 8px 28px rgba(15, 23, 42, 0.05);
 }
 
+/* Global layout */
 * {
     box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
 }
 
 body {
@@ -25,6 +30,7 @@ body {
     flex-direction: column;
 }
 
+/* Navbar */
 .app-navbar {
     background: linear-gradient(115deg, var(--navy), #1e40af);
     padding: 15px 0;
@@ -76,11 +82,18 @@ body {
     letter-spacing: 0.4px;
 }
 
-.app-main {
-    flex: 1;
+/* Main content and footer layout */
+.app-main,
+.app-content {
+    flex: 1 0 auto;
+    width: 100%;
 }
 
+/* Allows the footer to sit at the bottom on short pages */
 .app-footer {
+    flex-shrink: 0;
+    width: 100%;
+    margin-top: auto;
     border-top: 1px solid var(--border-color);
     background: #ffffff;
     padding: 20px 0;
@@ -89,7 +102,6 @@ body {
 }
 
 /* Page headings */
-
 .page-heading {
     display: flex;
     align-items: center;
@@ -122,7 +134,6 @@ body {
 }
 
 /* Buttons */
-
 .app-primary-btn {
     background: var(--primary);
     border-color: var(--primary);
@@ -178,7 +189,6 @@ body {
 }
 
 /* Summary cards */
-
 .stat-card {
     display: flex;
     align-items: center;
@@ -242,7 +252,6 @@ body {
 }
 
 /* Employee table */
-
 .content-card {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
@@ -371,7 +380,6 @@ body {
 }
 
 /* Add and update forms */
-
 .form-page {
     width: 100%;
     max-width: 690px;
@@ -415,7 +423,6 @@ body {
 }
 
 /* Login and registration */
-
 .auth-page {
     display: flex;
     justify-content: center;
@@ -458,7 +465,6 @@ body {
 }
 
 /* Keyboard accessibility */
-
 .btn:focus-visible,
 a:focus-visible,
 input:focus-visible,
@@ -468,7 +474,6 @@ select:focus-visible {
 }
 
 /* Responsive adjustments */
-
 @media (max-width: 767.98px) {
     .page-heading {
         align-items: flex-start;

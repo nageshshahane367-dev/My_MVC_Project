@@ -7,5 +7,6 @@
         public string Department { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string Designation { get; set; } = null!;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

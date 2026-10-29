@@ -1,108 +1,223 @@
-﻿@using System.Security.Claims
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - PeopleHub</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet" />
+    <title>@ViewData["Title"] - MyFirstMVCApp</title>
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
     <link rel="stylesheet"
           href="~/css/site.css"
           asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/MyFirstMVCApp.styles.css"
+          asp-append-version="true" />
+
+    @* Layout-specific footer and content positioning *@
+    <style>
+        html {
+            min-height: 100%;
+        }
+
+        body.app-layout {
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-layout > header {
+            flex: 0 0 auto;
+        }
+
+        .app-layout .app-main {
+            flex: 1 0 auto;
+            width: 100%;
+        }
+
+        .app-layout .app-footer {
+            flex-shrink: 0;
+            width: 100%;
+            margin-top: auto;
+        }
+    </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark app-navbar">
-        <div class="container">
-            <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">
-                <span class="brand-icon">P</span>
-                PeopleHub
-            </a>
 
-            <button class="navbar-toggler" type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#mainNavbar"
-                    aria-controls="mainNavbar"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+<body class="app-layout">
 
-            <div class="collapse navbar-collapse" id="mainNavbar">
-                <ul class="navbar-nav me-auto ms-lg-4">
-                    @if (User.Identity?.IsAuthenticated == true)
-                    {
-                        @if (User.IsInRole("Admin") || User.IsInRole("HR"))
+    @* Navigation bar *@
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark app-navbar">
+            <div class="container-fluid">
+
+                <a class="navbar-brand fw-bold"
+                   asp-controller="Home"
+                   asp-action="Index">
+
+                    <span class="brand-icon">M</span>
+                    <span>MyFirstMVCApp</span>
+                </a>
+
+                <button class="navbar-toggler"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNavbar">
+
+                    @* Main navigation links *@
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Home"
+                               asp-action="Index">
+                                Home
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link"
+                               asp-controller="Home"
+                               asp-action="Privacy">
+                                Privacy
+                            </a>
+                        </li>
+
+                        @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li class="nav-item">
                                 <a class="nav-link"
                                    asp-controller="Dashboard"
-                                   asp-action="Index">Employees</a>
+                                   asp-action="Index">
+                                    Dashboard
+                                </a>
                             </li>
+
+                            @* Leave Management for authenticated users *@
                             <li class="nav-item">
                                 <a class="nav-link"
-                                   asp-controller="Dashboard"
-                                   asp-action="AddEmployee">Add Employee</a>
+                                   asp-controller="Leave"
+                                   asp-action="Index">
+                                    <span class="me-1">📅</span>
+                                    Leave Management
+                                </a>
+                            </li>
+
+                            @* Leave approval for Admin and HR *@
+                            @if (User.IsInRole("Admin") ||
+                                 User.IsInRole("HR"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link"
+                                       asp-controller="Leave"
+                                       asp-action="Manage">
+                                        Manage Leave Requests
+                                    </a>
+                                </li>
+                            }
+
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   asp-controller="Notifications"
+                                   asp-action="Index">
+                                    Notifications
+                                </a>
                             </li>
                         }
-                    }
-                </ul>
+                    </ul>
 
-                @if (User.Identity?.IsAuthenticated == true)
-                {
-                    <div class="d-flex align-items-center gap-3 mt-3 mt-lg-0">
-                        <div class="text-white text-lg-end">
-                            <div class="small text-white-50">Signed in as</div>
-                            <div class="fw-semibold">
-                                @(User.Identity.Name ?? "User")
-                            </div>
-                            <span class="badge role-badge">
-                                @(User.FindFirst(ClaimTypes.Role)?.Value ?? "User")
-                            </span>
-                        </div>
+                    @* Authentication controls *@
+                    <ul class="navbar-nav ms-auto align-items-lg-center">
 
-                        <form asp-controller="Auth"
-                              asp-action="Logout"
-                              method="post">
-                            @Html.AntiForgeryToken()
-                            <button type="submit"
-                                    class="btn btn-outline-light btn-sm">
-                                <span aria-hidden="true">↪</span> Logout
-                            </button>
-                        </form>
-                    </div>
-                }
-                else
-                {
-                    <div class="d-flex gap-2 mt-3 mt-lg-0">
-                        <a class="btn btn-outline-light btn-sm"
-                           asp-controller="Auth"
-                           asp-action="Login">Login</a>
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item">
+                                <span class="navbar-text text-white me-lg-3">
+                                    Welcome, @(User.Identity.Name ?? "User")
+                                </span>
+                            </li>
 
-                        <a class="btn btn-light btn-sm text-primary fw-semibold"
-                           asp-controller="Auth"
-                           asp-action="Registration">Register</a>
-                    </div>
-                }
+                            <li class="nav-item">
+                                <form asp-controller="Auth"
+                                      asp-action="Logout"
+                                      method="post"
+                                      class="d-inline">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit"
+                                            class="btn btn-outline-light btn-sm">
+                                        Logout
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item me-lg-2">
+                                <a class="btn btn-outline-light btn-sm"
+                                   asp-controller="Auth"
+                                   asp-action="Login">
+                                    Login
+                                </a>
+                            </li>
+
+                            <li class="nav-item mt-2 mt-lg-0">
+                                <a class="btn btn-light btn-sm text-primary"
+                                   asp-controller="Auth"
+                                   asp-action="Registration">
+                                    Register
+                                </a>
+                            </li>
+                        }
+                    </ul>
+
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </header>
 
-    <main class="container app-main py-4 py-lg-5">
+    @* Main content fills the remaining vertical space *@
+    <main role="main" class="app-main container py-4">
         @RenderBody()
     </main>
 
+    @* Footer stays at the bottom on short pages *@
     <footer class="app-footer">
-        <div class="container d-flex flex-column flex-md-row
+        <div class="container d-flex flex-column flex-sm-row
                     justify-content-between align-items-center gap-2">
-            <span>© @DateTime.Now.Year PeopleHub</span>
-            <span>Employee Management System</span>
+
+            <span>
+                &copy; @DateTime.Now.Year MyFirstMVCApp
+            </span>
+
+            <span>
+                Employee Management System
+            </span>
+
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @* JavaScript files *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

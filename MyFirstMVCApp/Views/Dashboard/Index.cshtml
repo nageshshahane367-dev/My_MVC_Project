@@ -1,9 +1,11 @@
-﻿@using MyFirstMVCApp.Dto
+﻿ @using MyFirstMVCApp.Dto
 @model IEnumerable<EmployeeDto>
 
 @{
     ViewData["Title"] = "Employee Dashboard";
+
     var employees = Model?.ToList() ?? new List<EmployeeDto>();
+
     var departmentCount = employees
         .Where(e => !string.IsNullOrWhiteSpace(e.Department))
         .Select(e => e.Department)
@@ -23,17 +25,28 @@
         </p>
     </div>
 
-    @if (canManage)
-    {
-        <a asp-controller="Dashboard"
-           asp-action="AddEmployee"
-           class="btn btn-primary app-primary-btn">
-            <span class="me-1">+</span> Add Employee
-        </a>
-    }
+    <div class="d-flex flex-wrap gap-2">
+        @if (canManage)
+        {
+            <a asp-controller="Dashboard"
+               asp-action="Analytics"
+               class="btn btn-outline-primary">
+                <i class="bi bi-bar-chart-line me-1"></i>
+                View Analytics
+            </a>
+
+            <a asp-controller="Dashboard"
+               asp-action="AddEmployee"
+               class="btn btn-primary app-primary-btn">
+                <span class="me-1">+</span> Add Employee
+            </a>
+        }
+    </div>
 </div>
 
+<!-- Dashboard Statistics -->
 <div class="row g-3 mb-4">
+
     <div class="col-12 col-sm-6 col-xl-4">
         <div class="stat-card">
             <div class="stat-icon stat-icon-blue">👥</div>
@@ -66,9 +79,12 @@
             </div>
         </div>
     </div>
+
 </div>
 
+<!-- Employee Directory -->
 <div class="content-card">
+
     <div class="content-card-header">
         <div>
             <h2 class="section-title">Employee Directory</h2>
@@ -78,11 +94,15 @@
         </div>
     </div>
 
+    <!-- Search and Department Filter -->
     <div class="row g-3 p-3 p-lg-4">
+
         <div class="col-12 col-lg-8">
-            <label for="employeeSearch" class="form-label small fw-semibold">
+            <label for="employeeSearch"
+                   class="form-label small fw-semibold">
                 Search employees
             </label>
+
             <input id="employeeSearch"
                    type="search"
                    class="form-control app-input"
@@ -90,11 +110,16 @@
         </div>
 
         <div class="col-12 col-lg-4">
-            <label for="departmentFilter" class="form-label small fw-semibold">
+            <label for="departmentFilter"
+                   class="form-label small fw-semibold">
                 Filter by department
             </label>
-            <select id="departmentFilter" class="form-select app-input">
+
+            <select id="departmentFilter"
+                    class="form-select app-input">
+
                 <option value="">All departments</option>
+
                 @foreach (var department in employees
                     .Select(e => e.Department)
                     .Where(d => !string.IsNullOrWhiteSpace(d))
@@ -103,44 +128,55 @@
                 {
                     <option value="@department">@department</option>
                 }
+
             </select>
         </div>
+
     </div>
 
+    <!-- Employee Table -->
     <div class="table-responsive">
         <table class="table employee-table align-middle mb-0">
+
             <thead>
                 <tr>
                     <th>Employee</th>
                     <th>Department</th>
                     <th>Email</th>
                     <th>Designation</th>
-                    @if (canManage)
-                    {
-                        <th class="text-end">Actions</th>
-                    }
+                    <th class="text-end">Actions</th>
                 </tr>
             </thead>
+
             <tbody id="employeeTableBody">
+
                 @foreach (var employee in employees)
                 {
                     <tr data-search="@($"{employee.EmployeeName} {employee.Email} {employee.Department} {employee.Designation}".ToLowerInvariant())"
                         data-department="@employee.Department">
+
                         <td>
                             <div class="d-flex align-items-center gap-3">
+
                                 <div class="employee-avatar">
                                     @(string.IsNullOrWhiteSpace(employee.EmployeeName)
                                         ? "?"
-                                        : employee.EmployeeName.Trim().Substring(0, 1).ToUpperInvariant())
+                                        : employee.EmployeeName.Trim()
+                                            .Substring(0, 1)
+                                            .ToUpperInvariant())
                                 </div>
+
                                 <div class="fw-semibold text-dark">
                                     @employee.EmployeeName
+
                                     <div class="small text-secondary">
                                         ID: @employee.Id
                                     </div>
                                 </div>
+
                             </div>
                         </td>
+
                         <td>
                             <span class="department-pill">
                                 @(string.IsNullOrWhiteSpace(employee.Department)
@@ -148,91 +184,144 @@
                                     : employee.Department)
                             </span>
                         </td>
+
                         <td>
-                            <a class="employee-email" href="mailto:@employee.Email">
+                            <a class="employee-email"
+                               href="mailto:@employee.Email">
                                 @employee.Email
                             </a>
                         </td>
+
                         <td>@employee.Designation</td>
 
-                        @if (canManage)
-                        {
-                            <td class="text-end text-nowrap">
+                        <td class="text-end text-nowrap">
+                            <!-- View Employee Profile -->
+                            <a asp-controller="Dashboard"
+                               asp-action="Details"
+                               asp-route-id="@employee.Id"
+                               class="btn btn-sm btn-outline-info me-1">
+                                <i class="bi bi-person-vcard me-1"></i>
+                                View Details
+                            </a>
+
+                            @if (canManage)
+                            {
                                 <a asp-controller="Dashboard"
                                    asp-action="UpdateEmployee"
                                    asp-route-id="@employee.Id"
-                                   class="btn btn-sm btn-edit">
+                                   class="btn btn-sm btn-edit me-1">
                                     Edit
                                 </a>
+                            }
 
-                                @if (canDelete)
-                                {
-                                    <form asp-controller="Dashboard"
-                                          asp-action="DeleteEmployee"
-                                          asp-route-id="@employee.Id"
-                                          method="post"
-                                          class="d-inline"
-                                          onsubmit="return confirm('Are you sure you want to delete this employee?');">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit"
-                                                class="btn btn-sm btn-delete">
-                                            Delete
-                                        </button>
-                                    </form>
-                                }
-                            </td>
-                        }
+                            @if (canDelete)
+                            {
+                                <form asp-controller="Dashboard"
+                                      asp-action="DeleteEmployee"
+                                      asp-route-id="@employee.Id"
+                                      method="post"
+                                      class="d-inline"
+                                      onsubmit="return confirm('Are you sure you want to delete this employee?');">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit"
+                                            class="btn btn-sm btn-delete">
+                                        Delete
+                                    </button>
+
+                                </form>
+                            }
+                        </td>
+
                     </tr>
                 }
+
             </tbody>
+
         </table>
     </div>
 
+    <!-- Empty State -->
     <div id="noEmployeesMessage"
          class="empty-state @(employees.Count == 0 ? "" : "d-none")">
+
         <div class="empty-state-icon">⌕</div>
+
         <h3>No employees found</h3>
+
         <p class="text-secondary mb-0">
             Try changing your search or department filter.
         </p>
+
     </div>
+
 </div>
 
 @section Scripts {
     <script>
         (() => {
-            const searchInput = document.getElementById("employeeSearch");
-            const departmentFilter = document.getElementById("departmentFilter");
+            const searchInput =
+                document.getElementById("employeeSearch");
+
+            const departmentFilter =
+                document.getElementById("departmentFilter");
+
             const rows = Array.from(
                 document.querySelectorAll("#employeeTableBody tr")
             );
-            const emptyMessage = document.getElementById("noEmployeesMessage");
+
+            const emptyMessage =
+                document.getElementById("noEmployeesMessage");
 
             function filterEmployees() {
-                const search = searchInput.value.trim().toLowerCase();
-                const department = departmentFilter.value.toLowerCase();
+                const search =
+                    searchInput.value.trim().toLowerCase();
+
+                const department =
+                    departmentFilter.value.toLowerCase();
+
                 let visibleCount = 0;
 
                 rows.forEach(row => {
-                    const searchText = row.dataset.search || "";
+                    const searchText =
+                        row.dataset.search || "";
+
                     const rowDepartment =
                         (row.dataset.department || "").toLowerCase();
 
-                    const matchesSearch = searchText.includes(search);
-                    const matchesDepartment =
-                        !department || rowDepartment === department;
+                    const matchesSearch =
+                        searchText.includes(search);
 
-                    const visible = matchesSearch && matchesDepartment;
+                    const matchesDepartment =
+                        !department ||
+                        rowDepartment === department;
+
+                    const visible =
+                        matchesSearch && matchesDepartment;
+
                     row.classList.toggle("d-none", !visible);
 
-                    if (visible) visibleCount++;
+                    if (visible) {
+                        visibleCount++;
+                    }
                 });
 
-                emptyMessage.classList.toggle("d-none", visibleCount > 0);
+                emptyMessage.classList.toggle(
+                    "d-none",
+                    visibleCount > 0
+                );
             }
 
-            searchInput.addEventListener("input", filterEmployees);
-            departmentFilter.addEventListener("change", filterEmployees);
+            searchInput.addEventListener(
+                "input",
+                filterEmployees
+            );
+
+            departmentFilter.addEventListener(
+                "change",
+                filterEmployees
+            );
         })();
     </script>
 }

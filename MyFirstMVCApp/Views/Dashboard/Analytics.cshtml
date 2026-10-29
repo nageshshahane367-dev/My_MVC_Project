@@ -1,0 +1,243 @@
+@using MyFirstMVCApp.ViewModels
+@model DashboardAnalyticsViewModel
+
+@{
+    ViewData["Title"] = "Dashboard Analytics";
+
+    var maxCount = Model.DepartmentCounts.Any()
+        ? Model.DepartmentCounts.Max(x => x.EmployeeCount)
+        : 1;
+}
+
+<div class="container py-4">
+
+    <div class="d-flex flex-column flex-md-row
+                justify-content-between align-items-md-center
+                gap-3 mb-4">
+
+        <div>
+            <span class="text-primary fw-semibold small">
+                EMPLOYEE MANAGEMENT
+            </span>
+
+            <h1 class="fw-bold mt-1">Dashboard Analytics</h1>
+
+            <p class="text-secondary mb-0">
+                Overview of your employee records and departments.
+            </p>
+        </div>
+
+        <a asp-controller="Dashboard"
+           asp-action="Index"
+           class="btn btn-outline-primary">
+            Back to Employees
+        </a>
+    </div>
+
+    <!-- Summary cards -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+                    <div class="text-secondary small mb-2">
+                        Total Employees
+                    </div>
+
+                    <div class="d-flex justify-content-between
+                                align-items-center">
+                        <h2 class="fw-bold mb-0">
+                            @Model.TotalEmployees
+                        </h2>
+
+                        <span class="text-primary fs-3">
+                            <i class="bi bi-people"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+                    <div class="text-secondary small mb-2">
+                        Total Departments
+                    </div>
+
+                    <div class="d-flex justify-content-between
+                                align-items-center">
+                        <h2 class="fw-bold mb-0">
+                            @Model.TotalDepartments
+                        </h2>
+
+                        <span class="text-success fs-3">
+                            <i class="bi bi-building"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body p-4">
+                    <div class="text-secondary small mb-2">
+                        Total Designations
+                    </div>
+
+                    <div class="d-flex justify-content-between
+                                align-items-center">
+                        <h2 class="fw-bold mb-0">
+                            @Model.TotalDesignations
+                        </h2>
+
+                        <span class="text-warning fs-3">
+                            <i class="bi bi-briefcase"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Department distribution -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-4">
+
+            <h4 class="fw-bold mb-1">
+                Department-wise Distribution
+            </h4>
+
+            <p class="text-secondary small mb-4">
+                Number of employees in each department.
+            </p>
+
+            @if (!Model.DepartmentCounts.Any())
+            {
+                <p class="text-secondary mb-0">
+                    No department records are available.
+                </p>
+            }
+            else
+            {
+                @foreach (var item in Model.DepartmentCounts)
+                {
+                    var percentage =
+                        item.EmployeeCount * 100.0 / maxCount;
+
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between
+                                    align-items-center mb-2">
+
+                            <span class="fw-semibold">
+                                @(string.IsNullOrWhiteSpace(item.Department)
+                                    ? "Unassigned"
+                                    : item.Department)
+                            </span>
+
+                            <span class="text-secondary small">
+                                @item.EmployeeCount employees
+                            </span>
+                        </div>
+
+                        <div class="progress"
+                             style="height: 10px;"
+                             role="progressbar"
+                             aria-label="@item.Department employees"
+                             aria-valuenow="@item.EmployeeCount"
+                             aria-valuemin="0"
+                             aria-valuemax="@maxCount">
+
+                            <div class="progress-bar bg-primary"
+                                 style="width: @percentage%">
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+
+    <!-- Recent employees -->
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+
+            <div class="d-flex justify-content-between
+                        align-items-center mb-3">
+
+                <div>
+                    <h4 class="fw-bold mb-1">
+                        Recently Added Employees
+                    </h4>
+
+                    <p class="text-secondary small mb-0">
+                        The five latest employee records.
+                    </p>
+                </div>
+
+                <a asp-controller="Dashboard"
+                   asp-action="Index"
+                   class="btn btn-sm btn-outline-primary">
+                    View All
+                </a>
+            </div>
+
+            @if (!Model.RecentEmployees.Any())
+            {
+                <p class="text-secondary mb-0">
+                    No employee records found.
+                </p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+
+                        <thead>
+                            <tr>
+                                <th>Employee Name</th>
+                                <th>Department</th>
+                                <th>Designation</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var employee in Model.RecentEmployees)
+                            {
+                                <tr>
+                                    <td class="fw-semibold">
+                                        @employee.EmployeeName
+                                    </td>
+
+                                    <td>
+                                        @employee.Department
+                                    </td>
+
+                                    <td>
+                                        @employee.Designation
+                                    </td>
+
+                                    <td>
+                                        <a asp-controller="Dashboard"
+                                           asp-action="UpdateEmployee"
+                                           asp-route-id="@employee.Id"
+                                           class="btn btn-sm btn-outline-primary">
+                                            View / Edit
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>

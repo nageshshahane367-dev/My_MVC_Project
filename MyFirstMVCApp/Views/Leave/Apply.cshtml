@@ -1,0 +1,113 @@
+
+@model MyFirstMVCApp.Dto.LeaveRequestDto
+
+@{
+    ViewData["Title"] = "Apply for Leave";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <a asp-action="Index"
+               class="text-decoration-none text-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Back to Leave Dashboard
+            </a>
+
+            <div class="card border-0 shadow-sm rounded-4 mt-3">
+                <div class="card-body p-4 p-md-5">
+                    <div class="mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center
+                                    rounded-3 bg-primary-subtle text-primary p-3 mb-3">
+                            <i class="bi bi-calendar-plus fs-3"></i>
+                        </div>
+
+                        <h1 class="fw-bold">Apply for Leave</h1>
+                        <p class="text-secondary">
+                            Complete the form below to submit your request.
+                        </p>
+                    </div>
+
+                    <form asp-controller="Leave" asp-action="Apply" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="alert alert-danger"
+                             role="alert"></div>
+
+                        <div class="mb-4">
+                            <label asp-for="LeaveType" class="form-label fw-semibold"></label>
+                            <select asp-for="LeaveType" class="form-select form-select-lg">
+                                <option value="">-- Select leave type --</option>
+                                <option value="Casual">Casual Leave</option>
+                                <option value="Sick">Sick Leave</option>
+                                <option value="Earned">Earned Leave</option>
+                            </select>
+                            <span asp-validation-for="LeaveType"
+                                  class="text-danger small"></span>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-12 col-md-6 mb-3">
+                                <label asp-for="StartDate"
+                                       class="form-label fw-semibold"></label>
+                                <input asp-for="StartDate"
+                                       type="date"
+                                       class="form-control form-control-lg"
+                                       min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                                <span asp-validation-for="StartDate"
+                                      class="text-danger small"></span>
+                            </div>
+
+                            <div class="col-12 col-md-6 mb-3">
+                                <label asp-for="EndDate"
+                                       class="form-label fw-semibold"></label>
+                                <input asp-for="EndDate"
+                                       type="date"
+                                       class="form-control form-control-lg"
+                                       min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                                <span asp-validation-for="EndDate"
+                                      class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Reason"
+                                   class="form-label fw-semibold"></label>
+                            <textarea asp-for="Reason"
+                                      class="form-control"
+                                      rows="4"
+                                      maxlength="1000"
+                                      placeholder="Explain why you need leave..."></textarea>
+                            <div class="form-text">
+                                Provide a clear reason for your request.
+                            </div>
+                            <span asp-validation-for="Reason"
+                                  class="text-danger small"></span>
+                        </div>
+
+                        <div class="alert alert-info rounded-3">
+                            <i class="bi bi-info-circle me-2"></i>
+                            Your request will remain pending until HR or Admin reviews it.
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2 mt-4">
+                            <button type="submit"
+                                    class="btn btn-primary btn-lg rounded-3 px-4">
+                                <i class="bi bi-send me-2"></i>Submit Request
+                            </button>
+
+                            <a asp-action="Index"
+                               class="btn btn-light border btn-lg rounded-3">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

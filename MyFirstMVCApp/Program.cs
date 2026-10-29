@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
-using MyFirstMVCApp.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MyFirstMVCApp.Models;
@@ -79,9 +78,7 @@ builder.Services
     });
 
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-builder.Services.AddHttpClient<
-    IEmployeeDescriptionService,
-    HuggingFaceEmployeeDescriptionService>();
+
 var app = builder.Build();
 
 // DATABASE DIAGNOSTICS
